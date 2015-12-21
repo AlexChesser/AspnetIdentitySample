@@ -20,6 +20,7 @@ namespace AspnetIdentitySample.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private ApplicationDbContext _ctx;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -27,12 +28,14 @@ namespace AspnetIdentitySample.Controllers
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext ctx,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _ctx = ctx;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -104,7 +107,15 @@ namespace AspnetIdentitySample.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                UserDetails ud = new UserDetails {
+                    PublicInformation = "this is sample public information"
+                };
+                _ctx.UserDetails.Add(ud);
+                await _ctx.SaveChangesAsync();
+                user.UserDetailsID = ud.UserDetailsID;
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

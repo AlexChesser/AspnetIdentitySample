@@ -9,6 +9,7 @@ namespace AspnetIdentitySample.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -16,5 +17,7 @@ namespace AspnetIdentitySample.Models
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<UserDetails> UserDetails { get; set; }
     }
 }

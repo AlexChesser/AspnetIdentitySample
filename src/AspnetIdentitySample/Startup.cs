@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using AspnetIdentitySample.Models;
 using AspnetIdentitySample.Services;
+using AspnetIdentitySample.CurrentUser;
 
 namespace AspnetIdentitySample
 {
@@ -54,6 +55,7 @@ namespace AspnetIdentitySample
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddMvc();
 
             // Add application services.
@@ -99,7 +101,7 @@ namespace AspnetIdentitySample
             app.UseStaticFiles();
 
             app.UseIdentity();
-
+            app.SetCurrentUser();
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>

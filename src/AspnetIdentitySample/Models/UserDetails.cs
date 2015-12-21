@@ -7,9 +7,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 namespace AspnetIdentitySample.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser
+    public class UserDetails
     {
         public int UserDetailsID { get; set; }
-        public virtual UserDetails UserDetails { get; set; }
+        public string PublicInformation { get; set; }
     }
 }
