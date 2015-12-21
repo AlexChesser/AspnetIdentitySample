@@ -109,7 +109,7 @@ namespace AspnetIdentitySample
             app.UseIdentity();
             app.SetCurrentUser();
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-            await roleManager.EnsureRolesCreated();
+            roleManager.EnsureRolesCreated();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

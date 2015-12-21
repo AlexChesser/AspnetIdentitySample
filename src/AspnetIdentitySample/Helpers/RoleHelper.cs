@@ -16,10 +16,12 @@ namespace AspnetIdentitySample.Helpers
                 await roleManager.CreateAsync(new IdentityRole(roleName));
             }
         }
-        public static async Task EnsureRolesCreated(this RoleManager<IdentityRole> roleManager)
+        public static async void EnsureRolesCreated(this RoleManager<IdentityRole> roleManager)
         {
             // add all roles, that should be in database, here
+            await EnsureRoleCreated(roleManager, "Administrator");
             await EnsureRoleCreated(roleManager, "Developer");
+            await EnsureRoleCreated(roleManager, "User");
         }
     }
 }
