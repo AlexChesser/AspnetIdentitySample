@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using AspnetIdentitySample.Models;
 using AspnetIdentitySample.Services;
 using AspnetIdentitySample.CurrentUser;
+using Microsoft.AspNet.Identity;
+using AspnetIdentitySample.Helpers;
 
 namespace AspnetIdentitySample
 {
@@ -52,6 +54,7 @@ namespace AspnetIdentitySample
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddRoleManager<ApplicationRoleManager>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -64,7 +67,10 @@ namespace AspnetIdentitySample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app,
+            RoleManager<IdentityRole> roleManager,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -103,7 +109,7 @@ namespace AspnetIdentitySample
             app.UseIdentity();
             app.SetCurrentUser();
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-
+            await roleManager.EnsureRolesCreated();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
