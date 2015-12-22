@@ -21,14 +21,14 @@ namespace AspnetIdentitySample.CurrentUser
             _next = next;
         }
 
-        public async Task<Task> Invoke(HttpContext httpContext, ICurrentUserService cus, UserManager<ApplicationUser> um)
+        public async Task Invoke(HttpContext httpContext, ICurrentUserService cus, UserManager<ApplicationUser> um)
         {
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 ApplicationUser au = await um.FindByIdAsync(httpContext.User.GetUserId());
                 await cus.Set(au);
             }
-            return _next(httpContext);
+            await _next(httpContext);
         }
     }
 
