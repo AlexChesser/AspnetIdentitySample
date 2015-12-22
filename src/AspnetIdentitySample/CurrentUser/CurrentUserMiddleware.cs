@@ -21,22 +21,12 @@ namespace AspnetIdentitySample.CurrentUser
             _next = next;
         }
 
-        public async Task<Task> Invoke(HttpContext httpContext)
+        public async Task<Task> Invoke(HttpContext httpContext, ICurrentUserService cus, UserManager<ApplicationUser> um)
         {
             if (httpContext.User.Identity.IsAuthenticated)
             {
-                // MiddleWare is only instantiated once for the lifecycle of the project.
-                // as such, IServices cannot be injected if you are hoping to retrieve SCOPED
-                // services.
-                // There is however, an iserviceprovider attached to each request which can be
-                // used to resolve scoped dependencies within middleware.
-                // Per Kiran Challa's answer on Stack overflow
-                // http://stackoverflow.com/a/34406675/398055
-                IServiceProvider sp = httpContext.RequestServices;
-                ICurrentUserService _cu = sp.GetRequiredService<ICurrentUserService>();;
-                UserManager<ApplicationUser> _um = sp.GetRequiredService<UserManager<ApplicationUser>>();
-                ApplicationUser au = await _um.FindByIdAsync(httpContext.User.GetUserId());
-                await _cu.Set(au);
+                ApplicationUser au = await um.FindByIdAsync(httpContext.User.GetUserId());
+                await cus.Set(au);
             }
             return _next(httpContext);
         }
